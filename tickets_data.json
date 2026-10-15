@@ -1,0 +1,23 @@
+[
+    {
+        "id": "T001",
+        "title": "Wi-Fi router down in Library",
+        "category": "Network",
+        "status": "open",
+        "priority": "critical"
+    },
+    {
+        "id": "T002",
+        "title": "Python compiler error in Lab 3",
+        "category": "Software",
+        "status": "open",
+        "priority": "high"
+    },
+    {
+        "id": "T003",
+        "title": "Projector bulb replacement needed",
+        "category": "Hardware",
+        "status": "resolved",
+        "priority": "medium"
+    }
+]
