@@ -1,32 +1,42 @@
-def create_tickets(ticket_id: str, title: str, category: str, urgency: str, affected_users: int) -> dict:
+# campusflow/models.py
+
+def calculate_priority(urgency: str, affected_users: int) -> str:
     """
-    take a raw input and return a strutured dictionary representing a ticket.
+    Calculates priority based on urgency and affected users.
     """
-    ticket = {
-        "id": ticket_id,
-        "title": title,
-        "category": category,
-        "urgency": urgency,
+    clean_urgency = urgency.strip().casefold()
+    
+    if clean_urgency == "high" or affected_users > 50:
+        return "critical"
+    elif clean_urgency == "medium" or affected_users > 10:
+        return "high"
+    elif clean_urgency == "low" and affected_users <= 5:
+        return "low"
+    else:
+        return "medium"
+
+
+def create_ticket(ticket_id: str, title: str, category: str, urgency: str, affected_users: int) -> dict:
+    """
+    Creates a new ticket dictionary with automated priority and default status.
+    """
+    clean_id = ticket_id.strip()
+    clean_title = title.strip()
+    clean_category = category.strip().casefold()
+    clean_urgency = urgency.strip().casefold()
+    
+    priority = calculate_priority(clean_urgency, affected_users)
+    
+    return {
+        "id": clean_id,
+        "title": clean_title,
+        "category": clean_category,
+        "urgency": clean_urgency,
         "affected_users": affected_users,
+        "priority": priority,
         "status": "open",
         "assigned_to": None
-
     }
-    return ticket
 
-    def calculate_priority(urgency: str, affected_users: int) -> str:
-        """
-        evaluating urgency and affected users to return a priority rating
-        """
-        urgency_clean = urgency.strip().casefold()
-        # rule 1: if urgency and 10 or more user are affected = critical
-        if urgency_clean == "high" and affected_users >= 10 :
-            return "Critical"
-        # rule 2: if urgency == high or affected users is 10 or more = high
-        elif urgency_clean == "high" or affected_users >= 10 :
-            return "high" 
-        # rule 3: if urgency medium and affected user 3 = medium
-        elif urgency_clean == "medium" or affected_users >= 3:
-            return "medium"
-        else:
-            return "low"       
+# Backward compatibility alias
+create_tickets = create_ticket

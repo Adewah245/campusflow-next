@@ -1,12 +1,13 @@
 # main.py
-from campusflow.cli import run_helpdesk
 from campusflow.storage import load_tickets, save_tickets
 from campusflow.models import create_ticket
 from campusflow.workflow import assign_ticket, update_ticket_status
-from campusflow.reports import get_open_work_queue
+from campusflow.reports import get_open_work_queue, generate_report
 
-def main():
-    # Step 1: Load existing tickets from disk when the app starts
+def run_helpdesk():
+    """
+    Launches the CampusFlow interactive CLI menu.
+    """
     tickets = load_tickets()
     print("==========================================")
     print("  Welcome to CampusFlow Helpdesk CLI 🚀")
@@ -18,9 +19,10 @@ def main():
         print("2. Create New Ticket")
         print("3. Assign Ticket to Staff")
         print("4. Update Ticket Status")
-        print("5. Exit & Save")
+        print("5. View System Insights Report")
+        print("6. Exit & Save")
         
-        choice = input("\nEnter your choice (1-5): ").strip()
+        choice = input("\nEnter your choice (1-6): ").strip()
         
         if choice == "1":
             queue = get_open_work_queue(tickets)
@@ -76,13 +78,24 @@ def main():
                 print(f"✅ Ticket {ticket_id} status updated to '{new_status}'!")
             else:
                 print("❌ Status update failed. Check workflow rules (e.g., must be assigned before 'in_progress').")
-                
+
         elif choice == "5":
+            insights = generate_report(tickets)
+            print("\n📊 --- System Insights Report ---")
+            print(f"Total Tickets: {insights['total_tickets']}")
+            print(f"Open Tickets: {insights['open_tickets']}")
+            print(f"Resolved Tickets: {insights['resolved_tickets']}")
+            print("Priority Breakdown:")
+            for prio, count in insights['priority_breakdown'].items():
+                print(f"  - {prio.upper()}: {count}")
+            print("-" * 35)
+                
+        elif choice == "6":
             save_tickets(tickets)
             print("\n💾 Tickets saved successfully. Goodbye!")
             break
         else:
-            print("❌ Invalid choice. Please enter a number between 1 and 5.")
+            print("❌ Invalid choice. Please enter a number between 1 and 6.")
 
 if __name__ == "__main__":
     run_helpdesk()
