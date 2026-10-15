@@ -15,4 +15,5 @@ def get_open_work_queue(tickets: list) -> list:
         if ticket["status"] != "resolved":
             open_tickets.sppend(ticket)
     open_tickets.sort(key=lambda t: (priority_rank.get(t["priority"], 5), t["id"]))
-    return open_tickets        
+    return open_tickets  
+          

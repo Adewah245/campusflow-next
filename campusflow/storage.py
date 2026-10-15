@@ -1,35 +1,34 @@
 # campusflow/storage.py
-
 import json
 import os
 
-def save_tickets(filepath: str, tickets: list) -> None:
+DATA_FILE = "data/tickets.json"
+
+def save_tickets(tickets: list) -> None:
     """
-    Saves a list of ticket dictionaries into a JSON file on disk.
-    We use indent=4 so the file is human-readable.
+    Saves the current list of tickets to a JSON file on disk.
     """
-    try:
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump(tickets, f, indent=4)
-    except IOError as e:
-        print(f"Warning: Could not save tickets to {filepath}. Error: {e}")
+    # Ensure the 'data' directory exists before saving
+    os.makedirs("data", exist_ok=True)
+    
+    with open(DATA_FILE, "w", encoding="utf-8") as file:
+        # json.dump converts our Python list of dictionaries into text and writes it
+        json.dump(tickets, file, indent=4)
 
 
-def load_tickets(filepath: str) -> list:
+def load_tickets() -> list:
     """
-    Loads tickets from a JSON file on disk.
-    Edge case protection: If the file doesn't exist or is empty, 
-    we return an empty list [] instead of crashing the program.
+    Loads tickets from the JSON file on startup. 
+    Returns an empty list if no file exists yet.
     """
-    if not os.path.exists(filepath):
+    # If the file doesn't exist yet, start with a fresh empty list
+    if not os.path.exists(DATA_FILE):
         return []
-
+        
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read().strip()
-            if not content:
-                return []
-            return json.loads(content)
-    except (json.JSONDecodeError, IOError) as e:
-        print(f"Warning: Could not read tickets from {filepath}. Error: {e}")
+        with open(DATA_FILE, "r", encoding="utf-8") as file:
+            # json.load reads the file text and converts it back into Python lists/dictionaries
+            return json.load(file)
+    except json.JSONDecodeError:
+        print("⚠️ Warning: The tickets.json file is corrupted. Starting with an empty ticket list.")
         return []
