@@ -3,7 +3,6 @@ validation.py - Engineer A's validation bouncer.
 Ensures all incoming ticket data is clean, legal, and safe before any changes are made.
 """
 
-# Allowed options for categories andurgency
 VALID_CATEGORIES = {"Network", "Hardware", "Software", "Other"}
 VALID_URGENCIES = {"low", "medium", "high"}
 VALID_STATUSES = {"open", "in_progress", "resolved"}
@@ -24,7 +23,6 @@ def validate_category(category):
     if not isinstance(category, str):
         raise TypeError("Category must be a text string.")
     
-    # Capitalize to match canonical values (e.g., "network" -> "Network")
     normalized = category.strip().capitalize()
     if normalized not in VALID_CATEGORIES:
         raise ValueError(f"Invalid category '{category}'. Must be one of: {list(VALID_CATEGORIES)}")
